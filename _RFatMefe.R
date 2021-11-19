@@ -17,7 +17,7 @@ setwd(dir = paste("~/RF"))
 df <- read.csv("./RF_data/df_dagow_RF.csv")
 
 ## format
-# The dataset needs the columns Timestamp (YYYY-MM-DD HH:MM) and Year (YYYY). 
+# The dataset needs the column Timestamp (as.POSIXct("YYYY-MM-DD HH:MM")). 
 # All other variables should be quality controlled Fluxes (i.e. variables to gap-fill) and meteorological variables (predictors)
 df$Timestamp <- as.POSIXct(df$Timestamp)
 
@@ -45,7 +45,7 @@ N_cores = makeCluster(parallelly::availableCores(omit = 1))
 # How many trees should be grown. Take care, the number of trees scales linearly with the processing time. Higher N_trees will take longer.
 N_trees = 20
 
-# Should gridded search for mtry be performed? The more mtry´s are computed the higher the processing time. 
+# Should gridded search for mtry be performed? The more mtry?s are computed the higher the processing time. 
 train_mtry = F
 
 if (train_mtry) {

@@ -1,6 +1,9 @@
 RF_impute_missing_fluxes <- 
   function(Flux, Year, impute, data, N_cores, N_trees, train_mtry, mtry, K_cv = NULL, N_cv = NULL) {
   
+  # make "Year" variable in data
+  data$Year <- as.integer(format(Timestamp, "%Y"))
+    
   # check if output directories are present
   if (!dir.exists(paste0(getwd(),"/RF_models"))) {stop("Output directory ./RF_models does not exist")}
   if (!dir.exists(paste0(getwd(),"/RF_plots"))) {stop("Output directory ./RF_plots does not exist")}
