@@ -2,7 +2,7 @@
 title: "Using Random Forest for Eddy Covariance flux gap-filling"
 author: "Felix Nieberding"
 date: "25 11 2021"
-output: html_document
+output: rmarkdown::github_document
 ---
 
 ```{r setup, include=FALSE}
