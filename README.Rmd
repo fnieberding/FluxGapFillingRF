@@ -20,6 +20,6 @@ The other two scripts (*check_output.R* and *get_mtry.R*) can be used to inspect
 
 
 ### References:
-Breiman, L. (2001), Random Forests, Machine Learning 45(1), 5-32.
+Breiman, L.: Random Forests, Machine Learning, 45, 5–32, doi:10.1023/A:1010933404324, 2001.
 
-
+Kim, Y., Johnson, M. S., Knox, S. H., Black, T. A., Dalmagro, H. J., Kang, M., Kim, J., and Baldocchi, D.: Gap-filling approaches for eddy covariance methane fluxes: A comparison of three machine learning algorithms and a traditional method with principal component analysis, Global Change Biol, 26, 1499–1518, doi:10.1111/gcb.14845, 2020.
