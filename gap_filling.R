@@ -5,7 +5,7 @@ library(caret)
 library(doParallel)
 library(parallelly)
 library(RANN)        # only needed if impute == "knnImpute"
-source("RF_impute_missing_fluxes.R")
+source("_RF_impute_missing_fluxes.R")
 
 # import ------------------------------------------------------------------
 ## import locally

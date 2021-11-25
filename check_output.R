@@ -5,7 +5,7 @@ library(tidyverse)
 library(randomForest)
 library(caret)
 
-setwd(dir = paste("~/GFZ/_Dagow/5_data_analysis/Felix/RandomForest/"))
+setwd(dir = paste("~/GFZ/_Dagow/5_data_analysis/Felix/3_gap_filling/"))
 
 # import RF Models
 mod_RF_H_2015_bagImpute <- readRDS("./RF_models/mod_RF_H_2015_bagImpute.rds")
@@ -21,17 +21,17 @@ df_RF_H_2015_medianImpute <- read_csv("./RF_results/pred_RF_H_2015_medianImpute.
 
 # plot RMSE decrease for different imputation methods
 png("H_bagImpute.png")
-plot(sqrt(mod_RF_H_2015_bagImpute$finalModel$mse), ylab = "RMSE of H (W / m²)", xlab = "N trees", main = "Bag Impute", ylim = c(4.5,10))
+plot(sqrt(mod_RF_H_2015_bagImpute$finalModel$mse), ylab = "RMSE of H (W / m?)", xlab = "N trees", main = "Bag Impute", ylim = c(4.5,10))
 abline(5,0, col = "red")
 dev.off()
 
 png("H_medianImpute.png")
-plot(sqrt(mod_RF_H_2015_medianImpute$finalModel$mse), ylab = "RMSE of H (W / m²)", xlab = "N trees", main = "Median Impute", ylim = c(4.5,10))
+plot(sqrt(mod_RF_H_2015_medianImpute$finalModel$mse), ylab = "RMSE of H (W / m?)", xlab = "N trees", main = "Median Impute", ylim = c(4.5,10))
 abline(5,0, col = "red")
 dev.off()
 
 png("H_knnImpute.png")
-plot(sqrt(mod_RF_H_2015_knnImpute$finalModel$mse), ylab = "RMSE of H (W / m²)", xlab = "N trees", main = "KNN Impute", ylim = c(4.5,10))
+plot(sqrt(mod_RF_H_2015_knnImpute$finalModel$mse), ylab = "RMSE of H (W / m?)", xlab = "N trees", main = "KNN Impute", ylim = c(4.5,10))
 abline(5,0, col = "red")
 dev.off()
 

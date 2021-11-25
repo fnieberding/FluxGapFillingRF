@@ -3,7 +3,7 @@ Sys.setenv(TZ='UTC')
 
 library(tidyverse)
 
-setwd(dir = paste("~/GFZ/_Dagow/5_data_analysis/Felix/RandomForest/"))
+setwd(dir = paste("~/GFZ/_Dagow/5_data_analysis/Felix/3_gap_filling/"))
 
 # import 
 df_mtry_H_2015 <- read_csv("./RF_models/mtry_H_2015.csv") %>%
