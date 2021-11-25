@@ -6,39 +6,13 @@ library(tidyverse)
 setwd(dir = paste("~/GFZ/_Dagow/5_data_analysis/Felix/3_gap_filling/"))
 
 # import 
-df_mtry_H_2015 <- read_csv("./RF_models/mtry_H_2015.csv") %>%
-  mutate(Year = 2015,
-         Flux = "H")
-df_mtry_H_2016 <- read_csv("./RF_models/mtry_H_2016.csv") %>%
-  mutate(Year = 2016,
-         Flux = "H")
+list_of_files <- list.files(path = "./RF_models/",
+                            recursive = TRUE,
+                            pattern = "*_medianImpute_20.csv",
+                            full.names = TRUE)
 
-df_mtry_LE_2015 <- read_csv("./RF_models/mtry_LE_2015.csv") %>%
-  mutate(Year = 2015,
-         Flux = "LE")
-df_mtry_LE_2016 <- read_csv("./RF_models/mtry_LE_2016.csv") %>%
-  mutate(Year = 2016,
-         Flux = "LE")
+df_mtry <- read_csv(list_of_files)
 
-df_mtry_NEE_2015 <- read_csv("./RF_models/mtry_NEE_2015.csv") %>%
-  mutate(Year = 2015,
-         Flux = "NEE")
-df_mtry_NEE_2016 <- read_csv("./RF_models/mtry_NEE_2016.csv") %>%
-  mutate(Year = 2016,
-         Flux = "NEE")
-
-df_mtry_FCH4_2015 <- read_csv("./RF_models/mtry_FCH4_2015.csv") %>%
-  mutate(Year = 2015,
-         Flux = "FCH4")
-df_mtry_FCH4_2016 <- read_csv("./RF_models/mtry_FCH4_2016.csv") %>%
-  mutate(Year = 2016,
-         Flux = "FCH4")
-
-# join data frames
-df_mtry <- rbind.data.frame(df_mtry_H_2015, df_mtry_H_2016, 
-                 df_mtry_LE_2015, df_mtry_LE_2016, 
-                 df_mtry_NEE_2015, df_mtry_NEE_2016,
-                 df_mtry_FCH4_2015, df_mtry_FCH4_2016)
 
 # calculate best tune parameters
 df_mtry_results <- df_mtry %>%
@@ -51,7 +25,7 @@ df_mtry_results <- df_mtry %>%
             MAE_min = min(MAE)) %>%
   ungroup()
 
-# plot results per Year and Flux
+# plot RMSE +- SD per Year and Flux
 df_mtry %>%
   mutate(Year = as.factor(Year)) %>%
   ggplot(aes(mtry, RMSE, color = Year)) +
@@ -64,7 +38,7 @@ df_mtry %>%
   facet_wrap(~Flux, ncol = 2, scales = "free_y") +
   theme_bw()
 
-# get average mtry (choose "floor" due to principle of parsimony)
+# get average mtry accorsding to different accuracy measures (choose "floor" due to principle of parsimony)
 df_mtry_results %>%
   group_by(Flux) %>%
   summarise(across(starts_with("mtry"), ~floor(mean(., na.rm = T))))

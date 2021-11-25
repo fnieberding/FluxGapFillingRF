@@ -1,4 +1,6 @@
+
 rm(list=ls())
+
 Sys.setenv(TZ='UTC')
 
 library(caret)
@@ -9,12 +11,12 @@ source("_RF_impute_missing_fluxes.R")
 
 # import ------------------------------------------------------------------
 ## import locally
-# setwd(dir = paste("~/GFZ/_Dagow/5_data_analysis/Felix/1_QAQC/"))
-# df <- read.csv("./data/df_dagow_RF.csv")
+setwd(dir = paste("~/GFZ/_Dagow/5_data_analysis/Felix/3_gap_filling/"))
+df <- read.csv("./RF_data/df_dagow_RF_211125.csv")
 
 ## import on linux server
-setwd(dir = paste("~/RF"))
-df <- read.csv("./RF_data/df_dagow_RF.csv")
+# setwd(dir = paste("~/RF"))
+# df <- read.csv("./RF_data/df_dagow_RF.csv")
 
 ## format
 # The dataset needs the column Timestamp (as.POSIXct("YYYY-MM-DD HH:MM")). 
@@ -31,13 +33,14 @@ if (!dir.exists(paste0(getwd(),"/RF_results"))) {dir.create(paste0(getwd(),"/RF_
 # set processing parameters for test run on local machine -----------------------------------------------
 
 # Flux to be gap filled. If other fluxes are present in data set they will also be used as predictor variables. 
-fluxes <- c("H") 
+fluxes <- c("H", "LE") 
 
 # For which years should the processing be performed? 
-years <- rep(c(2015), each = length(fluxes))
+years <- rep(c(2015, 2016), each = length(fluxes))
 
 # Which pre-processing steps should be performed? i.e. how should missing values in predictor variables be treated?
-impute = rep(c("medianImpute", "knnImpute", "bagImpute"), each = length(fluxes) + length(years))
+# impute = rep(c("medianImpute", "knnImpute", "bagImpute"), each = length(fluxes) + length(years))
+impute = rep(c("medianImpute"), each = length(fluxes) + length(years))
 
 # How many cores should be used for parallel processing. Depends on your machine.
 N_cores = makeCluster(parallelly::availableCores(omit = 1))
@@ -46,15 +49,15 @@ N_cores = makeCluster(parallelly::availableCores(omit = 1))
 N_trees = 20
 
 # Should gridded search for mtry be performed? The more mtry?s are computed the higher the processing time. 
-train_mtry = F
+train_mtry = T
 
 if (train_mtry) {
   ## if train_mtry = T
   # set vector of all possible mtrys to train.
-  mtry = c(1:length(predictors))  
+  # mtry = c(1:length(predictors))  
   
   # alternatively specify vector of desired length, e.g. 
-  # mtry = c(6,9,12)
+  mtry = c(6,9)
   
   K_cv = 3 # K-fold cross validation used for training mtry. Only used when train_mtry == T
   N_cv = 3  # N times repeated cross validation. Only used when train_mtry == T
@@ -66,6 +69,9 @@ if (train_mtry) {
     
     # alternatively use default for RF regression
     # mtry = floor(length(predictors)/3)
+    
+    K_cv = NULL
+    N_cv = NULL
   }
 
 

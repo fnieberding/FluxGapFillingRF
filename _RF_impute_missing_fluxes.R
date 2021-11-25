@@ -2,7 +2,7 @@ RF_impute_missing_fluxes <-
   function(Flux, Year, impute, data, N_cores, N_trees, train_mtry, mtry, K_cv = NULL, N_cv = NULL) {
   
   # make "Year" variable in data
-  data$Year <- as.integer(format(Timestamp, "%Y"))
+  data$Year <- as.integer(format(data$Timestamp, "%Y"))
     
   # check if output directories are present
   if (!dir.exists(paste0(getwd(),"/RF_models"))) {stop("Output directory ./RF_models does not exist")}
@@ -52,7 +52,12 @@ RF_impute_missing_fluxes <-
                   keepX = TRUE)
   
   # save results of modeling and mtry
-  write.csv(mod_RF$results, paste0("./RF_models/mtry_", Flux, "_", Year, "_", impute, "_", N_trees, ".csv"), row.names = FALSE)
+  if (train_mtry) {
+    mtry_results = mod_RF$results
+    mtry_results$Flux = Flux
+    mtry_results$Year = Year
+    write.csv(mtry_results, paste0("./RF_models/mtry_", Flux, "_", Year, "_", impute, "_", N_trees, ".csv"), row.names = FALSE)
+  }
   saveRDS(mod_RF, paste0("./RF_models/mod_RF_", Flux, "_", Year, "_", impute, "_", N_trees, ".rds"))
   
   # generate Flux_rf predictions for the whole dataset
