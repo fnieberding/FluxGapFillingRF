@@ -12,18 +12,16 @@ source("_RF_impute_missing_fluxes.R")
 # import ------------------------------------------------------------------
 ## import locally
 setwd(dir = paste("~/GFZ/_Dagow/5_data_analysis/Felix/3_gap_filling/"))
-df <- read.csv("./RF_data/df_dagow_RF_211125.csv")
-
-# df <- df %>% select(-NEE)
+data <- read.csv("./RF_data/df_dagow_RF_211125.csv")
 
 ## import on linux server
 # setwd(dir = paste("~/RF"))
-# df <- read.csv("./RF_data/df_dagow_RF.csv")
+# data <- read.csv("./RF_data/df_dagow_RF.csv")
 
 ## format
 # The dataset needs the column Timestamp (as.POSIXct("YYYY-MM-DD HH:MM")). 
 # All other variables should be quality controlled Fluxes (i.e. variables to gap-fill) and meteorological variables (predictors)
-df$Timestamp <- as.POSIXct(df$Timestamp)
+data$Timestamp <- as.POSIXct(data$Timestamp)
 
 ## generate output directories 
 # beware: when run on linux server this might not work. So: 
@@ -34,23 +32,21 @@ if (!dir.exists(paste0(getwd(),"/RF_results"))) {dir.create(paste0(getwd(),"/RF_
 
 # set processing parameters for test run on local machine -----------------------------------------------
 # set suffix, can be used for testing different settings
-suffix = "_wNEE"
+suffix = "_test"
 
 # Flux to be gap filled. If other fluxes are present in data set they will also be used as predictor variables. 
-fluxes <- c("H") 
+# fluxes <- c("H", "LE", "NEE") 
+fluxes <- c("H", "LE") 
 
 # For which years should the processing be performed? 
-years <- rep(c(2015), each = length(fluxes))
+years <- rep(c(2015,2016), each = length(fluxes))
 
-# Determine if the other fluxes should also be used as predictors
-use_other_fluxes_as_predictors = T
+# Which variables should be used as predictors
+predictors <- c("Tair", "RH", "Pa", "SWin", "SWout", "LWin", "LWout",
+                "Rn", "ws", "wd", "TW", "DO", "WTD", "Tskin", 
+                "sin_hod", "cos_hod", "sin_doy", "cos_doy")
 
-if (use_other_fluxes_as_predictors) {
-  predictors = NULL
-} else {
-  predictors <- c("Tair", "RH", "Pa", "SWin", "SWout", "LWin", "LWout",
-                  "Rn", "ws", "wd", "TW", "DO", "WTD", "Tskin", "DOY")
-}
+  
 
 # Which pre-processing steps should be performed? i.e. how should missing values in predictor variables be treated?
 # impute = rep(c("medianImpute", "knnImpute", "bagImpute"), each = length(fluxes) + length(years))
@@ -60,7 +56,7 @@ impute = rep(c("medianImpute"), each = length(fluxes) + length(years))
 N_cores = makeCluster(parallelly::availableCores(omit = 1))
 
 # How many trees should be grown. Take care, the number of trees scales linearly with the processing time. Higher N_trees will take longer.
-N_trees = 1000
+N_trees = 20
 
 # Should gridded search for mtry be performed? The more mtry?s are computed the higher the processing time. 
 train_mtry = F
@@ -110,9 +106,10 @@ registerDoParallel(cluster)
 
 mapply(RF_impute_missing_fluxes, 
        fluxes, years, impute, 
-       MoreArgs = list(data = df, predictors = predictors, use_other_fluxes_as_predictors = use_other_fluxes_as_predictors,
-                       N_cores = N_cores, N_trees = N_trees, train_mtry = train_mtry, 
-                       mtry = mtry, K_cv = K_cv, N_cv = N_cv, suffix = suffix))
+       MoreArgs = list(data = data, predictors = predictors,
+                       N_cores = N_cores, N_trees = N_trees, 
+                       train_mtry = train_mtry, mtry = mtry, 
+                       K_cv = K_cv, N_cv = N_cv, suffix = suffix))
 
 stopCluster(cluster)
 
