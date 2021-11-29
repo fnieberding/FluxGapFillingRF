@@ -33,7 +33,7 @@ The function produces 4 different outputs in 3 different folders.
 
 
 ### Example plot
-```{r message = FALSE, echo = FALSE, warning = FALSE}
+```{r echo = FALSE, message = FALSE}
 library(ggplot2)
 library(plotly)
 result <- read.csv("~/GFZ/_Dagow/5_data_analysis/Felix/3_gap_filling/RF_results/pred_RF_H_2015_medianImpute.csv")
