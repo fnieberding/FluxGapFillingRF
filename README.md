@@ -47,7 +47,7 @@ suffix (\_suffix).
 
 ### Example plot
 
-<iframe src="C:/Users/felix/Documents/GFZ/_Dagow/5_data_analysis/Felix/3_gap_filling/index.html" width="100%" height="600" scrolling="no" seamless="seamless" frameBorder="0"></iframe>
+![](README_files/figure-gfm/unnamed-chunk-1-1.png)<!-- -->
 
 ### References:
 
