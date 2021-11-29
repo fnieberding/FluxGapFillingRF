@@ -18,6 +18,85 @@ The script *gap_filling.R* imports the data and sets the processing options (e.g
 
 The other two scripts (*check_output.R* and *get_mtry.R*) can be used to inspect model accuracies and results for mtry determination.
 
+### Output
+The function produces 4 different outputs in 3 different folders.
+
+**./RF_models/mtry_[...].csv:** Error metrics of mtry estimation, gets only printed if train_mtry = TRUE
+
+**./RF_models/mod_RF_[...].rds:** The RF model itself.
+
+**./RF_results/pred_RF_[...].csv:** The results of gap-filling, i.e. the original values, the gap-filling results, the residuals and a column idicating if the values have been used for training only.
+
+**./RF_plots/RF_[...].png:** Plots showing the results of the gap-filling and accuracy metrics.
+
+**[...]:**  several suffixes getting concatenated indicating the variable which gets filled (_Flux), the year (_Year), the pre-processing method (_impute), the number of trees grown (_N_trees) and a freely choosable suffix (_suffix).
+
+
+### Example plot
+```{r message = FALSE, echo = FALSE, warning = FALSE}
+library(ggplot2)
+library(plotly)
+result <- read.csv("~/GFZ/_Dagow/5_data_analysis/Felix/3_gap_filling/RF_results/pred_RF_H_2015_medianImpute.csv")
+
+result$Timestamp <- as.POSIXct(result$Timestamp)
+
+mod_RF <- readRDS("~/GFZ/_Dagow/5_data_analysis/Felix/3_gap_filling/RF_models/mod_RF_H_2015_medianImpute.rds")
+
+test_value = result[which(result[, "test_set"] == 1), "value"]
+test_pred = result[which(result[, "test_set"] == 1), "RF_pred"]
+    
+test_pred = test_pred[which(!is.na(test_value))]
+test_value = test_value[which(!is.na(test_value))]
+    
+rss = sum((test_value - test_pred)^2, na.rm = T)
+tss = sum((test_value - mean(test_value, na.rm = T))^2)
+
+RMSE_test = round(caret::RMSE(test_pred, test_value), 3)
+RSQUARE_test = round(1 - rss / tss, 3)
+    
+# out-of-bag error
+RMSE_oob = round(sqrt(min(mod_RF$finalModel$mse)), 3)
+RSQUARE_oob = round(max(mod_RF$finalModel$rsq), 3)
+    
+# plot results
+error_pos.x = rep(as.POSIXct(as.numeric(max(result$Timestamp)) * 0.996, origin = "1970-01-01"), times = 4)
+error_pos.y = c(max(result$RF_filled) * 0.98, max(result$RF_filled) * 0.88, max(result$RF_filled) * 0.78, max(result$RF_filled) * 0.68)
+error_labels = c(paste0("RMSE_test: ", RMSE_test), paste0("RMSE_oob: ", RMSE_oob), paste0("RSQUARE_test: ", RSQUARE_test),
+                 paste0("RSQUARE_oob: ", RSQUARE_oob))
+
+Flux = "H"
+Year = 2015
+    
+p <-  ggplot(result, aes(Timestamp, RF_filled)) +
+      geom_line(aes(Timestamp, RF_filled), color = "black", na.rm = T) +
+      geom_point(color = "red", na.rm = T, size = .8) +
+      geom_point(aes(Timestamp, value), color= "black", na.rm = T)+
+      annotate("text", 
+               x = error_pos.x, 
+               y = error_pos.y, 
+               label = error_labels,
+               hjust = "left") +
+      # scale_y_continuous(name = expression('H (W m'^-2*')')) +
+      scale_y_continuous(name = "H (W/m²)") +
+      scale_x_datetime(date_breaks = "1 month", date_labels = "%m", name = "Month") +
+      theme_bw()
+
+p <- ggplotly(p)
+```
+
+```{r include, echo = FALSE}
+htmlwidgets::saveWidget(p, "index.html")
+
+"htmltools"::tags$iframe(
+  src=file.path(getwd(), "index.html"),
+  width="100%",
+  height="600",
+  scrolling="no",
+  seamless="seamless",
+  frameBorder="0"
+)
+```
+
 
 ### References:
 Breiman, L.: Random Forests, Machine Learning, 45, 5–32, doi:10.1023/A:1010933404324, 2001.

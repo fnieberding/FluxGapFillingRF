@@ -24,6 +24,31 @@ the number of cores available.
 The other two scripts (*check_output.R* and *get_mtry.R*) can be used to
 inspect model accuracies and results for mtry determination.
 
+### Output
+
+The function produces 4 different outputs in 3 different folders.
+
+**./RF_models/mtry\_\[…\].csv:** Error metrics of mtry estimation, gets
+only printed if train_mtry = TRUE
+
+**./RF_models/mod_RF\_\[…\].rds:** The RF model itself.
+
+**./RF_results/pred_RF\_\[…\].csv:** The results of gap-filling,
+i.e. the original values, the gap-filling results, the residuals and a
+column idicating if the values have been used for training only.
+
+**./RF_plots/RF\_\[…\].png:** Plots showing the results of the
+gap-filling and accuracy metrics.
+
+**\[…\]:** several suffixes getting concatenated indicating the variable
+which gets filled (\_Flux), the year (\_Year), the pre-processing method
+(\_impute), the number of trees grown (\_N_trees) and a freely choosable
+suffix (\_suffix).
+
+### Example plot
+
+<iframe src="C:/Users/felix/Documents/GFZ/_Dagow/5_data_analysis/Felix/3_gap_filling/index.html" width="100%" height="600" scrolling="no" seamless="seamless" frameBorder="0"></iframe>
+
 ### References:
 
 Breiman, L.: Random Forests, Machine Learning, 45, 5–32,
