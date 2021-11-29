@@ -12,7 +12,7 @@ The function in *\_RF_impute_missing_fluxes.R* is basically a convenient
 wrapper using `caret::train()` to perform gap-filling of input variables
 using `randomForest::randomForest()`. It is based on the code provided
 by [Yeonuk Kim](https://github.com/yeonukkim/EC_FCH4_gapfilling) based
-on his recent publication in Global Change Biology (Kim et al., 2021).
+on his recent publication in Global Change Biology (Kim et al., 2020).
 
 The script *gap_filling.R* imports the data and sets the processing
 options (e.g. mtry, n_trees, pre processing steps etc.) Then
