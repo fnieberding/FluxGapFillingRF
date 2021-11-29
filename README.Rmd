@@ -12,7 +12,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ## Description
 This Repo contains a function and use case for gap-filling Eddy Covariance data using Random Forests algorithm (Breiman, 2001). 
 
-The function in *\_RF_impute_missing_fluxes.R* is basically a convenient wrapper using `caret::train()` to perform gap-filling of input variables using `randomForest::randomForest()`. It is based on the code provided by [Yeonuk Kim](https://github.com/yeonukkim/EC_FCH4_gapfilling) based on his recent publication in Global Change Biology (Kim et al., 2021).
+The function in *\_RF_impute_missing_fluxes.R* is basically a convenient wrapper using `caret::train()` to perform gap-filling of input variables using `randomForest::randomForest()`. It is based on the code provided by [Yeonuk Kim](https://github.com/yeonukkim/EC_FCH4_gapfilling) based on his recent publication in Global Change Biology (Kim et al., 2020).
 
 The script *gap_filling.R* imports the data and sets the processing options (e.g. mtry, n_trees, pre processing steps etc.) Then *\_RF_impute_missing_fluxes.R* estimates the train parameters for every (flux) variable to be filled on an annual basis. The script is performed in parallel to increase computation time and can easily be adapted to the number of cores available.  
 
@@ -70,31 +70,18 @@ Year = 2015
 p <-  ggplot(result, aes(Timestamp, RF_filled)) +
       geom_line(aes(Timestamp, RF_filled), color = "black", na.rm = T) +
       geom_point(color = "red", na.rm = T, size = .8) +
-      geom_point(aes(Timestamp, value), color= "black", na.rm = T)+
+      geom_point(aes(Timestamp, value), color= "black", na.rm = T, size = .8)+
       annotate("text", 
                x = error_pos.x, 
                y = error_pos.y, 
                label = error_labels,
                hjust = "left") +
-      # scale_y_continuous(name = expression('H (W m'^-2*')')) +
-      scale_y_continuous(name = "H (W/m²)") +
+      scale_y_continuous(name = expression('H (W m'^-2*')')) +
+      # scale_y_continuous(name = "H (W/m²)") +
       scale_x_datetime(date_breaks = "1 month", date_labels = "%m", name = "Month") +
       theme_bw()
 
-p <- ggplotly(p)
-```
-
-```{r include, echo = FALSE}
-htmlwidgets::saveWidget(p, "index.html")
-
-"htmltools"::tags$iframe(
-  src=file.path(getwd(), "index.html"),
-  width="100%",
-  height="600",
-  scrolling="no",
-  seamless="seamless",
-  frameBorder="0"
-)
+p 
 ```
 
 
