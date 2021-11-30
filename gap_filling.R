@@ -12,7 +12,7 @@ source("_RF_impute_missing_fluxes.R")
 # import ------------------------------------------------------------------
 ## import locally
 setwd(dir = paste("~/GFZ/_Dagow/5_data_analysis/Felix/3_gap_filling/"))
-data <- read.csv("./RF_data/df_dagow_RF_211125.csv")
+data <- read.csv("./RF_data/df_dagow_RF.csv")
 
 ## import on linux server
 # setwd(dir = paste("~/RF"))
@@ -36,18 +36,17 @@ suffix = "_test"
 
 # Flux to be gap filled. If other fluxes are present in data set they will also be used as predictor variables. 
 # fluxes <- c("H", "LE", "NEE") 
-fluxes <- c("H", "LE") 
+fluxes <- c("H", "LE", "NEE") 
 
 # For which years should the processing be performed? 
-years <- rep(c(2015,2016), each = length(fluxes))
+years <- rep(c(2015:2016), each = length(fluxes))
 
 # Which variables should be used as predictors
 predictors <- c("Tair", "RH", "Pa", "SWin", "SWout", "LWin", "LWout",
-                "Rn", "ws", "wd", "TW", "DO", "WTD", "Tskin", 
-                "sin_hod", "cos_hod", "sin_doy", "cos_doy")
+                "Rn", "ws", "wd", "TW", "DO", "WTD", "VPD", "Tskin", 
+                "DOY", "sin_hod", "cos_hod", "sin_doy", "cos_doy")
 
   
-
 # Which pre-processing steps should be performed? i.e. how should missing values in predictor variables be treated?
 # impute = rep(c("medianImpute", "knnImpute", "bagImpute"), each = length(fluxes) + length(years))
 impute = rep(c("medianImpute"), each = length(fluxes) + length(years))
@@ -89,15 +88,21 @@ if (train_mtry) {
 ## Take care, this code will take a long time and the resulting models will be huge (~500 MB each). 
 ## Progress can be estimated with the plots and files which are written out during processing.
 
-# fluxes <- c("H", "LE", "NEE", "FCH4")
-# years <- rep(c(2015:2016), each = length(fluxes))
+fluxes <- c("H", "LE", "NEE", "FCH4")
+years <- rep(c(2015:2016), each = length(fluxes))
 # impute = rep(c("medianImpute", "knnImpute", "bagImpute"), each = length(fluxes) + length(years))
-# mtry = c(1:length(predictors)) 
-# train_mtry = T
-# N_cores = 10
-# N_trees = 1000
-# K_cv = 10
-# N_cv = 5
+impute = rep(c("bagImpute"), each = length(fluxes) + length(years))
+predictors <- c("Tair", "RH", "Pa", "SWin", "SWout", "LWin", "LWout",
+                "Rn", "ws", "wd", "TW", "DO", "WTD", "Tskin",
+                "DOY", "sin_hod", "cos_hod", "sin_doy", "cos_doy")
+N_cores = 3
+N_trees = 20
+train_mtry = TRUE
+mtry = c(1:length(predictors))
+K_cv = 10
+N_cv = 5
+suffix = ""
+
 
 
 # perform parallel Flux Imputation using RF -------------------------------

@@ -64,9 +64,6 @@ error_pos.y = c(max(result$RF_filled) * 0.98, max(result$RF_filled) * 0.88, max(
 error_labels = c(paste0("RMSE_test: ", RMSE_test), paste0("RMSE_oob: ", RMSE_oob), paste0("RSQUARE_test: ", RSQUARE_test),
                  paste0("RSQUARE_oob: ", RSQUARE_oob))
 
-Flux = "H"
-Year = 2015
-    
 p <-  ggplot(result, aes(Timestamp, RF_filled)) +
       geom_line(aes(Timestamp, RF_filled), color = "black", na.rm = T) +
       geom_point(color = "red", na.rm = T, size = .8) +

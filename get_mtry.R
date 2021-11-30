@@ -8,7 +8,7 @@ setwd(dir = paste("~/GFZ/_Dagow/5_data_analysis/Felix/3_gap_filling/"))
 # import 
 list_of_files <- list.files(path = "./RF_models/",
                             recursive = TRUE,
-                            pattern = "*_medianImpute_20.csv",
+                            pattern = "*_NEE_\\d{4}_medianImpute_750_.csv",
                             full.names = TRUE)
 
 df_mtry <- read_csv(list_of_files)
@@ -31,7 +31,7 @@ df_mtry %>%
   ggplot(aes(mtry, RMSE, color = Year)) +
   geom_point() +
   geom_line() +
-  geom_ribbon(aes(ymin = RMSE - RMSESD, ymax = RMSE + RMSESD, fill = Year), alpha = .5) +
+  # geom_ribbon(aes(ymin = RMSE - RMSESD, ymax = RMSE + RMSESD, fill = Year), alpha = .5) +
   geom_point(data = df_mtry_results, aes(x = mtry_RMSE_min, y = RMSE_min), color = "black") +
   geom_hline(data = df_mtry_results, aes(yintercept = RMSE_min), color = "black") +
   geom_vline(data = df_mtry_results, aes(xintercept = mtry_RMSE_min), color = "black") +
