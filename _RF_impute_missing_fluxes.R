@@ -1,5 +1,5 @@
 RF_impute_missing_fluxes <- 
-  function(Flux, Year, predictors = NULL, impute, data, N_cores, N_trees, train_mtry, mtry, K_cv = NULL, N_cv = NULL, suffix = "") {
+  function(Flux, Year, predictors = NULL, impute, data, N_trees, train_mtry, mtry, K_cv = NULL, N_cv = NULL, suffix = "") {
     
     # check if output directories are present
     if (!dir.exists(paste0(getwd(),"/RF_models"))) {stop("Output directory ./RF_models does not exist")}
